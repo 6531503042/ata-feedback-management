@@ -1,6 +1,5 @@
 package dev.bengi.userservice.domain.model;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,34 +16,18 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "users")
 public class User implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     private String firstName;
     private String lastName;
-
-    @Column(unique = true)
     private String email;
     private String password;
-
-    @Enumerated(EnumType.STRING)
     private Role role;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Token> tokens;
-
-    @Builder.Default
-    private boolean enabled = true;
-    @Builder.Default
-    private boolean accountNonExpired = true;
-    @Builder.Default
-    private boolean accountNonLocked = true;
-    @Builder.Default
-    private boolean credentialsNonExpired = true;
+    private boolean enabled;
+    private boolean accountNonExpired;
+    private boolean accountNonLocked;
+    private boolean credentialsNonExpired;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -54,6 +37,11 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
