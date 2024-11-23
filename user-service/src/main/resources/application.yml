@@ -3,14 +3,14 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:3307/user-service
+    url: jdbc:postgresql://localhost:5432/user_service
     username: postgres
-    password: 6531503042
+    password: postgres
   application:
     name: user-service
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -19,25 +19,20 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,metrics,prometheus,info
-  metrics:
-    tags:
-      application: ${spring.application.name}
-    distribution:
-      percentiles-histogram:
-        http.server.requests: true
-  tracing:
-    sampling:
-      probability: 1.0
-  prometheus:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
     metrics:
-      export:
-        enabled: true
+      enabled: true
+    prometheus:
+      enabled: true
 
 springdoc:
   api-docs:
@@ -55,3 +50,19 @@ application:
       expiration: 86400000 # a day in milliseconds
       refresh-token:
         expiration: 604800000 # 7 days in milliseconds
+
+logging:
+  level:
+    root: INFO
+    dev.bengi.userservice: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+sql:
+  init:
+    mode: always
+    platform: postgresql
+    continue-on-error: true
