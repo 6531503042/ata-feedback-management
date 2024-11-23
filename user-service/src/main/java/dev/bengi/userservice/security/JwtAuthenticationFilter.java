@@ -1,7 +1,7 @@
 package dev.bengi.userservice.security;
 
-import dev.bengi.userservice.repository.TokenRepository;
-import dev.bengi.userservice.service.JwtService;
+import dev.bengi.userservice.infrastructure.persistence.repository.TokenRepository;
+import dev.bengi.userservice.infrastructure.security.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
