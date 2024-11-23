@@ -15,6 +15,9 @@ public class UserMapper {
                 .password(entity.getPassword())
                 .role(entity.getRole())
                 .enabled(entity.isEnabled())
+                .accountNonExpired(entity.isAccountNonExpired())
+                .accountNonLocked(entity.isAccountNonLocked())
+                .credentialsNonExpired(entity.isCredentialsNonExpired())
                 .build();
     }
 
@@ -27,6 +30,9 @@ public class UserMapper {
                 .password(domain.getPassword())
                 .role(domain.getRole())
                 .enabled(domain.isEnabled())
+                .accountNonExpired(domain.isAccountNonExpired())
+                .accountNonLocked(domain.isAccountNonLocked())
+                .credentialsNonExpired(domain.isCredentialsNonExpired())
                 .build();
     }
 }
