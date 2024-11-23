@@ -1,6 +1,7 @@
 package dev.bengi.userservice.config;
 
 import dev.bengi.userservice.security.JwtAuthenticationFilter;
+import dev.bengi.userservice.infrastructure.security.LogoutService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,7 +46,8 @@ public class SecurityConfig {
                     "/swagger-ui/**",
                     "/webjars/**",
                     "/swagger-ui.html",
-                    "/error"
+                                "/actuator/**",
+                            "/error"
                 ).permitAll()
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/v1/manager/**").hasRole("MANAGER")
