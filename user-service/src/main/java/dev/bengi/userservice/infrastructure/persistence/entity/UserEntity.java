@@ -32,4 +32,13 @@ public class UserEntity {
 
     @Builder.Default
     private boolean enabled = true;
+
+    @Builder.Default
+    private boolean accountNonExpired = true;
+
+    @Builder.Default
+    private boolean accountNonLocked = true;
+
+    @Builder.Default
+    private boolean credentialsNonExpired = true;
 }
