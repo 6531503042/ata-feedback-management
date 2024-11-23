@@ -1,0 +1,46 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:3307/feedback-service
+    username: postgres
+    password: 6531503042
+  application:
+    name: feedback-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus,info
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  zipkin:
+    enabled: false
+  tracing:
+    enabled: false
+
+logging:
+  level:
+    root: INFO
+    dev.bengi.feedbackservice: DEBUG
+    org.springframework.security: DEBUG
