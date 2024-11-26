@@ -15,6 +15,7 @@ public class ProjectMapper {
                 .description(request.getDescription())
                 .feedbackStartDate(request.getFeedbackStartDate())
                 .feedbackEndDate(request.getFeedbackEndDate())
+                .totalEmployees(request.getTotalEmployees())
                 .active(true)
                 .build();
     }
@@ -26,6 +27,8 @@ public class ProjectMapper {
                 .description(project.getDescription())
                 .feedbackStartDate(project.getFeedbackStartDate())
                 .feedbackEndDate(project.getFeedbackEndDate())
+                .totalEmployees(project.getTotalEmployees())
+                .participatedEmployees(project.getParticipatedEmployees())
                 .active(project.isActive())
                 .build();
     }
