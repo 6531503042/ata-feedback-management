@@ -1,55 +1,37 @@
 version: '3.8'
 
 services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    environment:
+      - JENKINS_OPTS="--prefix=/jenkins"
+    networks:
+      - feedback-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   postgres:
     image: postgres:latest
-    container_name: postgres
-    ports:
-      - "3307:5432"
+    container_name: feedback-db
     environment:
+      POSTGRES_DB: feedback_service
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 6531503042
-      POSTGRES_DB: user-service
-      POSTGRES_MULTIPLE_DATABASES: feedback-service
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init-multiple-databases.sh:/docker-entrypoint-initdb.d/init-multiple-databases.sh
     networks:
-      - app-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - app-network
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
-    networks:
-      - app-network
-
-volumes:
-  postgres_data:
-  grafana_data:
+      - feedback-network
 
 networks:
-  app-network:
+  feedback-network:
     driver: bridge
+
+volumes:
+  jenkins_home:
+  postgres_data:

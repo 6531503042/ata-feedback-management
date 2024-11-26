@@ -7,6 +7,7 @@ plugins {
 allprojects {
     group = 'dev.bengi'
     version = '0.0.1-SNAPSHOT'
+    
     repositories {
         mavenCentral()
     }
@@ -14,53 +15,15 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
-
+    
     java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
-        }
+        sourceCompatibility = '21'
     }
-
-    configurations {
-        compileOnly {
-            extendsFrom annotationProcessor
-        }
-    }
-
+    
     dependencies {
-        // Spring Boot Starters
-        implementation 'org.springframework.boot:spring-boot-starter-web'
-        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-        implementation 'org.springframework.boot:spring-boot-starter-security'
-        implementation 'org.springframework.boot:spring-boot-starter-validation'
-        implementation 'org.springframework.boot:spring-boot-starter-actuator'
-        
-        // JWT
-        implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-        runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-        runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-        
-        // Lombok
-        compileOnly 'org.projectlombok:lombok'
-        annotationProcessor 'org.projectlombok:lombok'
-        
-        // Database
-        runtimeOnly 'org.postgresql:postgresql'
-        
-        // Swagger/OpenAPI
-        implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
-        
-        // Development
-        developmentOnly 'org.springframework.boot:spring-boot-devtools'
-        
-        // Test
+        // Common dependencies can be defined here
+        implementation 'org.springframework.boot:spring-boot-starter'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-        testImplementation 'org.springframework.security:spring-security-test'
     }
-
-    tasks.named('test') {
-        useJUnitPlatform()
-    }
-}
+} 

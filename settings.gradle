@@ -1,3 +1,10 @@
-rootProject.name = 'backend'
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'feedback-ata'
 include 'user-service'
 include 'feedback-service' 
