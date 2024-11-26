@@ -1,6 +1,6 @@
 package dev.bengi.feedbackservice.presentation.dto.request;
 
-import dev.bengi.feedbackservice.domain.model.PrivacyLevel;
+import dev.bengi.feedbackservice.domain.model.enums.PrivacyLevel;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

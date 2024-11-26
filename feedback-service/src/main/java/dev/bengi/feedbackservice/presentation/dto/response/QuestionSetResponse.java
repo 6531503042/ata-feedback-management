@@ -4,17 +4,18 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @Builder
-public class ProjectResponse {
+public class QuestionSetResponse {
     private UUID id;
     private String name;
     private String description;
-    private LocalDateTime feedbackStartDate;
-    private LocalDateTime feedbackEndDate;
     private boolean active;
-    private Integer totalEmployees;
-    private Integer participatedEmployees;
-}
+    private List<QuestionResponse> questions;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private UUID projectId;
+} 

@@ -2,6 +2,7 @@ package dev.bengi.feedbackservice.presentation.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,4 +25,8 @@ public class CreateProjectRequest {
 
     @NotNull(message = "Feedback end date is required")
     private LocalDateTime feedbackEndDate;
+
+    @NotNull(message = "Total employees is required")
+    @Min(value = 1, message = "Total employees must be at least 1")
+    private Integer totalEmployees;
 }
