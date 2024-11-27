@@ -49,7 +49,7 @@ public class Feedback {
     @CollectionTable(name = "feedback_responses", 
         joinColumns = @JoinColumn(name = "feedback_id"))
     @MapKeyColumn(name = "question_id")
-    private Map<UUID, FeedbackAnswer> responses;
+    private Map<UUID, Answer> responses;
     
     private Double rating;
     private String additionalComments;

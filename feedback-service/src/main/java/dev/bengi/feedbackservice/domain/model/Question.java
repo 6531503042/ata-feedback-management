@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -46,5 +47,12 @@ public class Question {
     
     public void setQuestionSet(QuestionSet questionSet) {
         this.questionSet = questionSet;
+    }
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Answer> answers;
+
+    public List<Answer> getAnswers() {
+        return answers;
     }
 }
