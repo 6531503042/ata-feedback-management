@@ -1,10 +1,17 @@
 pluginManagement {
     repositories {
-        mavenCentral()
         gradlePluginPortal()
+        mavenCentral()
     }
 }
 
-rootProject.name = 'feedback-ata'
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'feedback-ata-microservices-clean-arch-v1'
+include 'feedback-service'
 include 'user-service'
-include 'feedback-service' 
+include 'eureka-server' 
