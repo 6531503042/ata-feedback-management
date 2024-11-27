@@ -5,12 +5,12 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/user_service
     username: postgres
-    password: postgres
+    password: 6531503042
   application:
     name: user-service
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -19,7 +19,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+  cloud:
+    discovery:
+      enabled: true
 
 management:
   endpoints:
@@ -55,7 +57,7 @@ logging:
   level:
     root: INFO
     dev.bengi.userservice: DEBUG
-    org.springframework.security: INFO
+    org.springframework.security: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
   pattern:
@@ -66,3 +68,14 @@ sql:
     mode: always
     platform: postgresql
     continue-on-error: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    enabled: true
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
