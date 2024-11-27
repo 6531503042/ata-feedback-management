@@ -1,51 +1,65 @@
 package dev.bengi.feedbackservice.infrastructure.persistence.repository;
 
-import dev.bengi.feedbackservice.domain.model.Feedback;
-import dev.bengi.feedbackservice.domain.model.enums.QuestionCategory;
-import dev.bengi.feedbackservice.domain.model.enums.QuestionSentiment;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import dev.bengi.feedbackservice.application.dto.FeedbackSearch;
+import dev.bengi.feedbackservice.domain.model.Feedback;
+import dev.bengi.feedbackservice.domain.model.enums.QuestionCategory;
+import dev.bengi.feedbackservice.domain.model.enums.QuestionSentiment;
 
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, UUID> {
+    
     List<Feedback> findByProjectId(UUID projectId);
     
-    @Query("SELECT f FROM Feedback f WHERE f.projectId = :projectId " +
-           "AND (:category IS NULL OR f.question.category = :category) " +
-           "AND (:sentiment IS NULL OR f.question.sentiment = :sentiment) " +
-           "AND (:privacyLevel IS NULL OR f.privacyLevel = :privacyLevel) " +
-           "AND (:searchTerm IS NULL OR LOWER(f.answers) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
+    @Query("SELECT f FROM Feedback f WHERE " +
+           "(:projectId is null OR f.projectId = :projectId) AND " +
+           "(:category is null OR f.category = :category) AND " +
+           "(:sentiment is null OR f.question.sentiment = :sentiment) AND " +
+           "(:privacyLevel is null OR f.privacyLevel = :privacyLevel) AND " +
+           "(:searchTerm is null OR LOWER(f.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
     List<Feedback> findWithFilters(
-        @Param("projectId") UUID projectId,
-        @Param("category") QuestionCategory category,
-        @Param("sentiment") QuestionSentiment sentiment,
-        @Param("privacyLevel") String privacyLevel,
-        @Param("searchTerm") String searchTerm
+            @Param("projectId") UUID projectId,
+            @Param("category") QuestionCategory category,
+            @Param("sentiment") QuestionSentiment sentiment,
+            @Param("privacyLevel") String privacyLevel,
+            @Param("searchTerm") String searchTerm
     );
-
-    @Query(value = "SELECT * FROM feedbacks ORDER BY submitted_at DESC LIMIT :limit", nativeQuery = true)
+    
+    Long countByProjectId(UUID projectId);
+    
+    @Query("SELECT AVG(f.rating) FROM Feedback f WHERE f.projectId = :projectId")
+    Double getAverageRatingByProjectId(@Param("projectId") UUID projectId);
+    
+    @Query("SELECT AVG(f.rating) FROM Feedback f WHERE f.projectId = :projectId AND f.category = :category")
+    Double getAverageRatingByProjectIdAndCategory(
+            @Param("projectId") UUID projectId,
+            @Param("category") QuestionCategory category
+    );
+    
+    @Query(value = "SELECT f FROM Feedback f ORDER BY f.submittedAt DESC LIMIT :limit", nativeQuery = true)
     List<Feedback> findTopByOrderBySubmittedAtDesc(@Param("limit") int limit);
-
+    
     List<Feedback> findBySubmittedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
-
-    long countByProjectId(UUID projectId);
-
-    @Query("SELECT AVG(CAST(f.answers as double)) FROM Feedback f " +
-           "WHERE f.projectId = :projectId AND f.question.type = 'RATING'")
-    double getAverageRatingByProjectId(@Param("projectId") UUID projectId);
-
-    @Query("SELECT AVG(CAST(f.answers as double)) FROM Feedback f " +
-           "WHERE f.projectId = :projectId " +
-           "AND f.question.category = :category " +
-           "AND f.question.type = 'RATING'")
-    double getAverageRatingByProjectIdAndCategory(
-        @Param("projectId") UUID projectId,
-        @Param("category") QuestionCategory category
-    );
+    
+    @Query("SELECT f FROM Feedback f WHERE " +
+           "(:#{#search.projectId} is null OR f.projectId = :#{#search.projectId}) AND " +
+           "(:#{#search.category} is null OR f.category = :#{#search.category}) AND " +
+           "(:#{#search.searchTerm} is null OR LOWER(f.description) LIKE LOWER(CONCAT('%', :#{#search.searchTerm}, '%')))")
+    Page<Feedback> searchFeedback(@Param("search") dev.bengi.feedbackservice.domain.model.FeedbackSearch search, Pageable pageable);
+    
+    List<Feedback> findByUserId(UUID userId);
+    List<Feedback> findByUserIdAndProjectId(UUID userId, UUID projectId);
+    Optional<Feedback> findByIdAndUserId(UUID feedbackId, UUID userId);
+    List<Feedback> findByProjectIdAndQuestionSetId(UUID projectId, UUID questionSetId);
 } 
