@@ -1,14 +1,15 @@
 package dev.bengi.feedbackservice.presentation.dto.request;
 
-import dev.bengi.feedbackservice.domain.model.Question;
+import dev.bengi.feedbackservice.application.dto.feedback.FeedbackAnswerDto;
 import dev.bengi.feedbackservice.domain.model.enums.PrivacyLevel;
+import dev.bengi.feedbackservice.domain.model.enums.QuestionCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Data
@@ -16,12 +17,14 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubmitFeedbackRequest {
+    private UUID questionSetId;
     private UUID projectId;
     private String title;
     private String description;
-    private String category;
+    private QuestionCategory category;
     private PrivacyLevel privacyLevel;
-    private Question question;
-    private Map<UUID, String> answers;
+    private List<FeedbackAnswerDto> responses;
     private Double rating;
+    private String additionalComments;
+    private LocalDateTime submittedAt;
 }
