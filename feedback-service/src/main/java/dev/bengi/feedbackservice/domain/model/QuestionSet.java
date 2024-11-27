@@ -1,13 +1,12 @@
 package dev.bengi.feedbackservice.domain.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,27 +18,27 @@ import java.util.UUID;
 @Table(name = "question_sets")
 public class QuestionSet {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @NotBlank
-    private String name;
     
+    private String name;
     private String description;
     
-    @ManyToMany
-    @JoinTable(
-        name = "question_set_questions",
-        joinColumns = @JoinColumn(name = "set_id"),
-        inverseJoinColumns = @JoinColumn(name = "question_id")
-    )
-    private List<Question> questions;
+    @Column(name = "project_id")
+    private UUID projectId;
     
     private boolean active;
     
-    private LocalDateTime startDate;
+    @Builder.Default
+    @OneToMany(mappedBy = "questionSet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Question> questions = new ArrayList<>();
     
-    private LocalDateTime endDate;
+    public void addQuestion(Question question) {
+        questions.add(question);
+        question.setQuestionSet(this);
+    }
     
-    private UUID projectId;
+    public void removeQuestion(Question question) {
+        questions.remove(question);
+        question.setQuestionSet(null);
+    }
 } 

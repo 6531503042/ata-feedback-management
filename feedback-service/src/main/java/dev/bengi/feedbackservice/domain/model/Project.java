@@ -1,14 +1,13 @@
 package dev.bengi.feedbackservice.domain.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,37 +16,34 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "projects", uniqueConstraints = {
-    @UniqueConstraint(name = "uk_project_name", columnNames = "name")
-})
+@Table(name = "projects")
 public class Project {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @NotBlank
-    private String name;
     
+    private String name;
     private String description;
     
-    @NotNull
+    @Builder.Default
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Question> questions = new ArrayList<>();
+    
     private LocalDateTime feedbackStartDate;
-    
-    @NotNull
     private LocalDateTime feedbackEndDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     
-    private boolean active;
-
-    @NotNull
     private Integer totalEmployees;
-    
     private Integer participatedEmployees;
-
-    @ManyToMany
-    @JoinTable(
-        name = "project_questions",
-        joinColumns = @JoinColumn(name = "project_id"),
-        inverseJoinColumns = @JoinColumn(name = "question_id")
-    )
-    private List<Question> questions;
+    private boolean active;
+    
+    public void addQuestion(Question question) {
+        questions.add(question);
+        question.setProject(this);
+    }
+    
+    public void removeQuestion(Question question) {
+        questions.remove(question);
+        question.setProject(null);
+    }
 }

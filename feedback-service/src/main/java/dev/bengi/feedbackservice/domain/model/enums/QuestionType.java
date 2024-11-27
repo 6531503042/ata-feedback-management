@@ -1,8 +1,8 @@
 package dev.bengi.feedbackservice.domain.model.enums;
 
 public enum QuestionType {
-    RATING,
     TEXT,
+    RATING,
     MULTIPLE_CHOICE,
     SINGLE_CHOICE
 }

@@ -1,6 +1,5 @@
 package dev.bengi.feedbackservice.domain.model;
 
-import dev.bengi.feedbackservice.domain.model.enums.PrivacyLevel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,36 +10,61 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+import dev.bengi.feedbackservice.domain.model.enums.PrivacyLevel;
+import dev.bengi.feedbackservice.domain.model.enums.QuestionCategory;
+
+@Entity
+@Table(name = "feedbacks")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "feedbacks")
 public class Feedback {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
+    
     @Column(name = "project_id")
     private UUID projectId;
-
+    
     @Column(name = "user_id")
     private UUID userId;
-
-    @ElementCollection
-    @CollectionTable(name = "feedback_answers", 
-        joinColumns = @JoinColumn(name = "feedback_id"))
-    @MapKeyColumn(name = "question_id")
-    @Column(name = "answer")
-    private Map<UUID, String> answers;
-
+    
+    @Column(name = "question_set_id")
+    private UUID questionSetId;
+    
+    private String title;
+    private String description;
+    
+    @Enumerated(EnumType.STRING)
+    private QuestionCategory category;
+    
     @Enumerated(EnumType.STRING)
     private PrivacyLevel privacyLevel;
-
-    private LocalDateTime submittedAt;
-
-    @ManyToOne
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question;
+    
+    @ElementCollection
+    @CollectionTable(name = "feedback_responses", 
+        joinColumns = @JoinColumn(name = "feedback_id"))
+    @MapKeyColumn(name = "question_id")
+    private Map<UUID, FeedbackAnswer> responses;
+    
+    private Double rating;
+    private String additionalComments;
+    private LocalDateTime submittedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
