@@ -1,5 +1,6 @@
 package dev.bengi.feedbackservice.application.port.input;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,4 +33,22 @@ public interface FeedbackUseCase {
     List<Feedback> getRecentFeedback(int limit);
 
     byte[] generateYearlyReport(int year);
+
+    List<Feedback> findByProjectId(UUID projectId);
+    
+    List<Feedback> findWithFilters(
+        UUID projectId,
+        QuestionCategory category,
+        QuestionSentiment sentiment,
+        String privacyLevel,
+        String searchTerm
+    );
+    
+    Double getAverageRatingByProjectId(UUID projectId);
+    
+    Double getAverageRatingByProjectIdAndCategory(UUID projectId, QuestionCategory category);
+    
+    List<Feedback> findBySubmittedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+    
+    List<Feedback> findTopByOrderBySubmittedAtDesc(int limit);
 }

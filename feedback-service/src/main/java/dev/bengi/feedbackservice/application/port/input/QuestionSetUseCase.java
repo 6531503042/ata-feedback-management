@@ -9,7 +9,10 @@ import java.util.UUID;
 
 public interface QuestionSetUseCase {
     QuestionSetResponse createQuestionSet(CreateQuestionSetRequest request);
+    QuestionSetResponse getQuestionSet(UUID id);
     List<QuestionSetResponse> getAllQuestionSets();
-    QuestionSetResponse toggleQuestionSetStatus(UUID setId, boolean active);
-    QuestionSetResponse assignToProject(UUID setId, AssignQuestionSetRequest request);
+    void deleteQuestionSet(UUID id);
+    QuestionSetResponse updateQuestionSet(UUID id, CreateQuestionSetRequest request);
+    QuestionSetResponse toggleQuestionSetStatus(UUID id, boolean active);
+    QuestionSetResponse assignToProject(UUID id, AssignQuestionSetRequest request);
 } 
