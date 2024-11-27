@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: feedback-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/feedback_service
+    username: postgres
+    password: 6531503042
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/ 
