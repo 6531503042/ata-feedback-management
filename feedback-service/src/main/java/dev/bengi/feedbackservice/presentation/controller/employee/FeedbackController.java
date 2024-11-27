@@ -1,7 +1,7 @@
 package dev.bengi.feedbackservice.presentation.controller.employee;
 
 import dev.bengi.feedbackservice.application.dto.SubmitFeedbackRequest;
-import dev.bengi.feedbackservice.application.dto.FeedbackResponse;
+import dev.bengi.feedbackservice.presentation.dto.response.FeedbackResponse;
 import dev.bengi.feedbackservice.application.service.FeedbackService;
 import dev.bengi.feedbackservice.domain.model.Feedback;
 import dev.bengi.feedbackservice.infrastructure.persistence.mapper.FeedbackMapper;
@@ -43,11 +43,11 @@ public class FeedbackController {
                 feedbackService.getUserFeedbacksByProject(currentUser.getId(), projectId) :
                 feedbackService.getUserFeedbacks(currentUser.getId());
         
-        return ResponseEntity.ok(
-            feedbacks.stream()
+        List<FeedbackResponse> responses = feedbacks.stream()
                 .map(feedbackMapper::toResponse)
-                .collect(Collectors.toList())
-        );
+                .collect(Collectors.toList());
+                
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/my-feedbacks/{feedbackId}")
@@ -67,12 +67,9 @@ public class FeedbackController {
             @PathVariable UUID setId
     ) {
         List<Feedback> feedbacks = feedbackService.getFeedbacksByQuestionSet(projectId, setId);
-        return ResponseEntity.ok(
-            feedbacks.stream()
+        List<FeedbackResponse> responses = feedbacks.stream()
                 .map(feedbackMapper::toResponse)
-                .collect(Collectors.toList())
-        );
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(responses);
     }
-
-    // ... other endpoints
 }

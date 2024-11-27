@@ -1,10 +1,10 @@
 package dev.bengi.feedbackservice.presentation.controller.admin;
 
-import dev.bengi.feedbackservice.application.dto.FeedbackResponse;
-import dev.bengi.feedbackservice.application.dto.FeedbackSearchRequest;
+import dev.bengi.feedbackservice.presentation.dto.response.FeedbackResponse;
+import dev.bengi.feedbackservice.presentation.dto.request.FeedbackSearchRequest;
 import dev.bengi.feedbackservice.application.service.FeedbackService;
 import dev.bengi.feedbackservice.domain.model.FeedbackSearch;
-import dev.bengi.feedbackservice.domain.model.QuestionCategory;
+import dev.bengi.feedbackservice.domain.model.enums.QuestionCategory;
 import dev.bengi.feedbackservice.infrastructure.persistence.mapper.FeedbackMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
