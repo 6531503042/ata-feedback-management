@@ -2,6 +2,10 @@ package dev.bengi.userservice.domain.model;
 
 public enum Role {
     USER,
-    ADMIN,
-    MANAGER
+    EMPLOYEE,
+    ADMIN;
+
+    public String getValue() {
+        return this.name();
+    }
 }
