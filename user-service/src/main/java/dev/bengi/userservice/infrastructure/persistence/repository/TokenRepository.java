@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface TokenRepository extends JpaRepository<TokenEntity, Long> {
+public interface TokenRepository extends JpaRepository<TokenEntity, UUID> {
     @Query("""
             select t from TokenEntity t inner join UserEntity u on t.user.id = u.id
             where u.id = :userId and (t.expired = false or t.revoked = false)
