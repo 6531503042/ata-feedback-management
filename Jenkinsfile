@@ -115,6 +115,13 @@ pipeline {
     }
 
     triggers {
-        pollSCM('H/5 * * * *') // Poll every 5 minutes
+        githubPush()
+    }
+
+    options {
+        timestamps()
+        timeout(time: 1, unit: 'HOURS')
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 } 
