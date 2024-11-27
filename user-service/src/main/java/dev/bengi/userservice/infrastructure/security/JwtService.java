@@ -1,6 +1,7 @@
 package dev.bengi.userservice.infrastructure.security;
 
 import dev.bengi.userservice.domain.model.User;
+import dev.bengi.userservice.security.SecurityUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -44,7 +45,9 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        extraClaims.put("role", ((User) userDetails).getRole().name());
+        SecurityUser securityUser = (SecurityUser) userDetails;
+        User user = securityUser.getUser();
+        extraClaims.put("role", user.getRole().name());
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
