@@ -1,11 +1,8 @@
 package dev.bengi.userservice.infrastructure.persistence.entity;
 
-import dev.bengi.userservice.domain.model.Role;
+import dev.bengi.userservice.domain.model.enums.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -17,28 +14,15 @@ import java.util.UUID;
 @Table(name = "users")
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    private String email;
     private String firstName;
     private String lastName;
-
-    @Column(unique = true)
-    private String email;
     private String password;
-
+    
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @Builder.Default
-    private boolean enabled = true;
-
-    @Builder.Default
-    private boolean accountNonExpired = true;
-
-    @Builder.Default
-    private boolean accountNonLocked = true;
-
-    @Builder.Default
-    private boolean credentialsNonExpired = true;
+    
+    private boolean active;
 }
