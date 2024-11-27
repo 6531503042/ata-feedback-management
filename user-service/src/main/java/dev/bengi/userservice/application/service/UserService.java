@@ -77,19 +77,18 @@ public class UserService implements UserUseCase {
 
         var updatedUser = User.builder()
                 .id(user.getId())
+                .email(user.getEmail())
                 .firstName(request.getFirstName() != null ? request.getFirstName() : user.getFirstName())
                 .lastName(request.getLastName() != null ? request.getLastName() : user.getLastName())
-                .email(request.getEmail() != null ? request.getEmail() : user.getEmail())
-                .password(request.getPassword() != null ? passwordEncoder.encode(request.getPassword())
-                        : user.getPassword())
+                .password(request.getPassword() != null ? 
+                        passwordEncoder.encode(request.getPassword()) : 
+                        user.getPassword())
                 .role(request.getRole() != null ? request.getRole() : user.getRole())
-                .enabled(user.isEnabled())
-                .accountNonExpired(user.isAccountNonExpired())
-                .accountNonLocked(user.isAccountNonLocked())
-                .credentialsNonExpired(user.isCredentialsNonExpired())
+                .active(user.isActive())
                 .build();
 
-        return mapToUserResponse(userPort.save(updatedUser));
+        var savedUser = userPort.save(updatedUser);
+        return mapToUserResponse(savedUser);
     }
 
     @Override
@@ -112,7 +111,8 @@ public class UserService implements UserUseCase {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
-                .role(user.getRole())
+                .role(user.getRole().getValue())
+                .active(user.isActive())
                 .build();
     }
 }
