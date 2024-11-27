@@ -1,9 +1,9 @@
 package dev.bengi.feedbackservice.infrastructure.persistence.mapper;
 
 import dev.bengi.feedbackservice.application.dto.FeedbackRequest;
-import dev.bengi.feedbackservice.application.dto.FeedbackResponse;
 import dev.bengi.feedbackservice.domain.model.Feedback;
 import dev.bengi.feedbackservice.domain.model.enums.QuestionCategory;
+import dev.bengi.feedbackservice.presentation.dto.response.FeedbackResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,7 +17,7 @@ public class FeedbackMapper {
                 .title(feedback.getTitle())
                 .description(feedback.getDescription())
                 .category(feedback.getCategory() != null ? feedback.getCategory().name() : null)
-                .privacyLevel(feedback.getPrivacyLevel())
+                .privacyLevel(feedback.getPrivacyLevel() != null ? feedback.getPrivacyLevel().name() : null)
                 .rating(feedback.getRating())
                 .submittedAt(feedback.getSubmittedAt())
                 .createdAt(feedback.getCreatedAt())
