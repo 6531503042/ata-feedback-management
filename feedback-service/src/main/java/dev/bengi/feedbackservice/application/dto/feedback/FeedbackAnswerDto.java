@@ -1,15 +1,15 @@
 package dev.bengi.feedbackservice.application.dto.feedback;
 
-import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FeedbackResponse {
+public class FeedbackAnswerDto {
     private UUID questionId;
     private String type;
     private Integer ratingValue;
