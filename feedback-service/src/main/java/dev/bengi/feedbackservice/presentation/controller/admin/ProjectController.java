@@ -32,7 +32,7 @@ public class ProjectController {
     public ResponseEntity<ApiResponse<List<ProjectResponse>>> getAllProjects() {
         var projects = projectUseCase.getAllProjects()
                 .stream()
-                .map(project -> projectMapper.toProjectResponse(project))
+                .map(projectMapper::toProjectResponse)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(ApiResponse.success(projects));
     }

@@ -26,7 +26,7 @@ public class AnalyticsController {
         return ResponseEntity.ok(feedbackUseCase.getYearlyAnalytics(year));
     }
 
-    @GetMapping("/export/yearly/{year}")
+    @GetMapping("/yearly/{year}/export")
     public ResponseEntity<byte[]> exportYearlyReport(@PathVariable int year) {
         byte[] report = feedbackUseCase.generateYearlyReport(year);
         return ResponseEntity.ok()

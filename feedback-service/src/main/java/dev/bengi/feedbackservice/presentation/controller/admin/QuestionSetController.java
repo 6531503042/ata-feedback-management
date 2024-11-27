@@ -24,12 +24,14 @@ public class QuestionSetController {
     @PostMapping
     public ResponseEntity<ApiResponse<QuestionSetResponse>> createQuestionSet(
             @RequestBody @Valid CreateQuestionSetRequest request) {
-        return ResponseEntity.ok(ApiResponse.success(questionSetUseCase.createQuestionSet(request)));
+        QuestionSetResponse response = questionSetUseCase.createQuestionSet(request);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<QuestionSetResponse>>> getAllQuestionSets() {
-        return ResponseEntity.ok(ApiResponse.success(questionSetUseCase.getAllQuestionSets()));
+        List<QuestionSetResponse> questionSets = questionSetUseCase.getAllQuestionSets();
+        return ResponseEntity.ok(ApiResponse.success(questionSets));
     }
 
     @PutMapping("/{setId}/status")
