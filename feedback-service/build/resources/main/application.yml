@@ -2,35 +2,61 @@ server:
   port: 8082
 
 spring:
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:3307/feedback-service
-    username: postgres
-    password: 6531503042
   application:
     name: feedback-service
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/feedback_service
+    username: postgres
+    password: 6531503042
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    generate-ddl: true
-    open-in-view: false
     properties:
       hibernate:
         format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  cloud:
+    openfeign:
+      client:
+        config:
+          user-service-client:
+            url: ${application.config.user-service-url}
+            connectTimeout: 5000
+            readTimeout: 5000
+            loggerLevel: full
 
 application:
+  config:
+    user-service-url: http://localhost:8081
   security:
     jwt:
       secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,metrics,prometheus,info
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
   metrics:
     tags:
       application: ${spring.application.name}
@@ -44,3 +70,4 @@ logging:
     root: INFO
     dev.bengi.feedbackservice: DEBUG
     org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
