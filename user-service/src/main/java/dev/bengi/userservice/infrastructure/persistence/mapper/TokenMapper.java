@@ -11,28 +11,32 @@ public class TokenMapper {
     private final UserMapper userMapper;
 
     public Token toDomain(TokenEntity entity) {
-        if (entity == null)
-            return null;
+        if (entity == null) return null;
+        
         return Token.builder()
                 .id(entity.getId())
                 .token(entity.getToken())
                 .tokenType(entity.getTokenType())
-                .expired(entity.isExpired())
                 .revoked(entity.isRevoked())
-                .user(userMapper.toDomain(entity.getUser()))
+                .expired(entity.isExpired())
+                .user(entity.getUser())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
                 .build();
     }
 
     public TokenEntity toEntity(Token domain) {
-        if (domain == null)
-            return null;
+        if (domain == null) return null;
+        
         return TokenEntity.builder()
                 .id(domain.getId())
                 .token(domain.getToken())
                 .tokenType(domain.getTokenType())
-                .expired(domain.isExpired())
                 .revoked(domain.isRevoked())
-                .user(userMapper.toEntity(domain.getUser()))
+                .expired(domain.isExpired())
+                .user(domain.getUser())
+                .createdAt(domain.getCreatedAt())
+                .updatedAt(domain.getUpdatedAt())
                 .build();
     }
 }
