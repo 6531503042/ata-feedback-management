@@ -7,6 +7,7 @@ bin/
 target/
 *.jar
 *.war
+*.class
 
 # IntelliJ IDEA specific
 .idea/

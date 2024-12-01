@@ -2,11 +2,13 @@
 build/
 !gradle/wrapper/gradle-wrapper.jar
 
+
 # Compiled class files
 bin/
 target/
 *.jar
 *.war
+*.class
 
 # IntelliJ IDEA specific
 .idea/
