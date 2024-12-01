@@ -21,4 +21,4 @@ src/main/resources/application-local.yml
 src/main/resources/application-local.properties
 
 # OS specific
-.DS_Store
+.DS_Store 
