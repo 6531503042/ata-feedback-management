@@ -12,26 +12,22 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import dev.bengi.feedbackservice.application.dto.FeedbackSearch;
 import dev.bengi.feedbackservice.domain.model.Feedback;
 import dev.bengi.feedbackservice.domain.model.enums.QuestionCategory;
-import dev.bengi.feedbackservice.domain.model.enums.QuestionSentiment;
 
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, UUID> {
     
     List<Feedback> findByProjectId(UUID projectId);
     
-    @Query("SELECT f FROM Feedback f WHERE " +
-           "(:projectId is null OR f.projectId = :projectId) AND " +
-           "(:category is null OR f.category = :category) AND " +
-           "(:sentiment is null OR f.question.sentiment = :sentiment) AND " +
-           "(:privacyLevel is null OR f.privacyLevel = :privacyLevel) AND " +
-           "(:searchTerm is null OR LOWER(f.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
+    @Query("SELECT f FROM Feedback f " +
+           "WHERE (:projectId is null OR f.projectId = :projectId) " +
+           "AND (:category is null OR f.category = :category) " +
+           "AND (:privacyLevel is null OR f.privacyLevel = :privacyLevel) " +
+           "AND (:searchTerm is null OR LOWER(f.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
     List<Feedback> findWithFilters(
             @Param("projectId") UUID projectId,
             @Param("category") QuestionCategory category,
-            @Param("sentiment") QuestionSentiment sentiment,
             @Param("privacyLevel") String privacyLevel,
             @Param("searchTerm") String searchTerm
     );
