@@ -1,4 +1,4 @@
-package dev.bengi.feedbackservice.application.dto;
+package dev.bengi.feedbackservice.application.dto.feedback;
 
 import dev.bengi.feedbackservice.domain.model.enums.QuestionCategory;
 import lombok.Builder;

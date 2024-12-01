@@ -1,8 +1,8 @@
-package dev.bengi.feedbackservice.application.dto;
+package dev.bengi.feedbackservice.application.dto.feedback;
 
-import dev.bengi.feedbackservice.application.dto.feedback.FeedbackResponse;
 import dev.bengi.feedbackservice.domain.model.enums.PrivacyLevel;
 import dev.bengi.feedbackservice.domain.model.enums.QuestionCategory;
+import dev.bengi.feedbackservice.presentation.dto.request.FeedbackResponseRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +31,7 @@ public class SubmitFeedbackRequest {
     private Double rating;
     
     @NotNull
-    private List<FeedbackResponse> responses;
+    private List<FeedbackResponseRequest> responses;
     
     private String additionalComments;
     private LocalDateTime submittedAt;
