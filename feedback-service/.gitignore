@@ -5,6 +5,8 @@ build/
 # Compiled class files
 bin/
 target/
+*.jar
+*.war
 
 # IntelliJ IDEA specific
 .idea/
