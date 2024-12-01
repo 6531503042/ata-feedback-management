@@ -1,6 +1,8 @@
 package dev.bengi.feedbackservice.presentation.controller.employee;
 
-import dev.bengi.feedbackservice.application.dto.SubmitFeedbackRequest;
+import dev.bengi.feedbackservice.application.dto.feedback.SubmitFeedbackRequest;
+import dev.bengi.feedbackservice.presentation.dto.request.FeedbackRequest;
+import dev.bengi.feedbackservice.presentation.dto.request.FeedbackResponseRequest;
 import dev.bengi.feedbackservice.presentation.dto.response.FeedbackResponse;
 import dev.bengi.feedbackservice.application.service.FeedbackService;
 import dev.bengi.feedbackservice.domain.model.Feedback;
@@ -23,13 +25,27 @@ public class FeedbackController {
     private final FeedbackService feedbackService;
     private final FeedbackMapper feedbackMapper;
 
-    @PostMapping("/submit")
-    @PreAuthorize("hasRole('EMPLOYEE')")
+    @PostMapping
     public ResponseEntity<FeedbackResponse> submitFeedback(
             @CurrentUser CurrentUserDetails currentUser,
             @RequestBody SubmitFeedbackRequest request
     ) {
-        Feedback feedback = feedbackService.submitFeedback(currentUser.getId(), request);
+        FeedbackRequest feedbackRequest = FeedbackRequest.builder()
+                .projectId(request.getProjectId())
+                .questionSetId(request.getQuestionSetId())
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .category(request.getCategory())
+                .privacyLevel(request.getPrivacyLevel())
+                .rating(request.getRating())
+                .additionalComments(request.getAdditionalComments())
+                .submittedAt(request.getSubmittedAt())
+                .responses(request.getResponses().stream()
+                        .map(response -> new FeedbackResponseRequest(response.getType(), response.getRatingValue()))
+                        .collect(Collectors.toList()))
+                .build();
+
+        Feedback feedback = feedbackService.submitFeedback(currentUser.getId(), feedbackRequest);
         return ResponseEntity.ok(feedbackMapper.toResponse(feedback));
     }
 

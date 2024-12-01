@@ -1,71 +1,86 @@
 package dev.bengi.feedbackservice.presentation.controller.admin;
 
-import dev.bengi.feedbackservice.application.port.input.QuestionUseCase;
-import dev.bengi.feedbackservice.application.port.input.QuestionSetUseCase;
+import dev.bengi.feedbackservice.application.service.QuestionService;
 import dev.bengi.feedbackservice.domain.model.Question;
 import dev.bengi.feedbackservice.domain.model.enums.QuestionCategory;
-import dev.bengi.feedbackservice.domain.model.enums.QuestionSentiment;
+import dev.bengi.feedbackservice.domain.model.enums.QuestionType;
+import dev.bengi.feedbackservice.infrastructure.persistence.mapper.QuestionMapper;
 import dev.bengi.feedbackservice.presentation.dto.request.CreateQuestionRequest;
 import dev.bengi.feedbackservice.presentation.dto.request.CreateQuestionSetRequest;
 import dev.bengi.feedbackservice.presentation.dto.request.UpdateQuestionRequest;
 import dev.bengi.feedbackservice.presentation.dto.response.ApiResponse;
 import dev.bengi.feedbackservice.presentation.dto.response.QuestionResponse;
 import dev.bengi.feedbackservice.presentation.dto.response.QuestionSetResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/admin/questions")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class QuestionController {
-    private final QuestionUseCase questionUseCase;
-    private final QuestionSetUseCase questionSetUseCase;
+    private final QuestionService questionService;
+    private final QuestionMapper questionMapper;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<QuestionResponse>>> getAllQuestions() {
-        List<Question> questions = questionUseCase.getAllQuestions();
-        List<QuestionResponse> responses = questions.stream()
-                .map(this::mapToQuestionResponse)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(ApiResponse.success(responses));
+        try {
+            log.info("Fetching all questions");
+            List<Question> questions = questionService.getAllQuestions();
+            List<QuestionResponse> responses = questions.stream()
+                    .map(questionMapper::toResponse)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ApiResponse.success(responses));
+        } catch (Exception e) {
+            log.error("Error fetching all questions: ", e);
+            throw e;
+        }
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<QuestionResponse>> createQuestion(@Valid @RequestBody CreateQuestionRequest request) {
-        Question question = questionUseCase.createQuestion(request);
-        return ResponseEntity.ok(ApiResponse.success(mapToQuestionResponse(question)));
+        try {
+            log.info("Creating question with request: {}", request);
+            Question question = questionService.createQuestion(request);
+            QuestionResponse response = questionMapper.toResponse(question);
+            return ResponseEntity.ok(ApiResponse.success(response));
+        } catch (Exception e) {
+            log.error("Error creating question: ", e);
+            throw e;
+        }
     }
 
-    @PostMapping("/set")
+    @PostMapping("/question-sets")
     public ResponseEntity<ApiResponse<QuestionSetResponse>> createQuestionSet(
-            @RequestBody @Valid CreateQuestionSetRequest request) {
-        QuestionSetResponse response = questionSetUseCase.createQuestionSet(request);
-        return ResponseEntity.ok(ApiResponse.success(response));
+            @Valid @RequestBody CreateQuestionSetRequest request
+    ) {
+        List<QuestionResponse> responses = questionService.createQuestionSet(request);
+        return ResponseEntity.ok(ApiResponse.success(mapToQuestionSetResponse(responses)));
     }
 
-    @GetMapping("/category/{category}")
+    @GetMapping("/categories/{category}")
     public ResponseEntity<ApiResponse<List<QuestionResponse>>> getQuestionsByCategory(@PathVariable QuestionCategory category) {
-        List<Question> questions = questionUseCase.getQuestionsByCategory(category);
+        List<Question> questions = questionService.getQuestionsByCategory(category);
         List<QuestionResponse> responses = questions.stream()
-                .map(this::mapToQuestionResponse)
+                .map(questionMapper::toResponse)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(ApiResponse.success(responses));
     }
 
-    @GetMapping("/sentiment/{sentiment}")
-    public ResponseEntity<ApiResponse<List<QuestionResponse>>> getQuestionsBySentiment(
-            @PathVariable QuestionSentiment sentiment) {
-        List<Question> questions = questionUseCase.getQuestionsBySentiment(sentiment);
+    @GetMapping("/sentiment-analysis/{enabled}")
+    public ResponseEntity<ApiResponse<List<QuestionResponse>>> getQuestionsBySentimentAnalysis(
+            @PathVariable boolean enabled
+    ) {
+        List<Question> questions = questionService.getQuestionsBySentimentAnalysis(enabled);
         List<QuestionResponse> responses = questions.stream()
-                .map(this::mapToQuestionResponse)
+                .map(questionMapper::toResponse)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(ApiResponse.success(responses));
     }
@@ -73,25 +88,38 @@ public class QuestionController {
     @PutMapping("/{questionId}")
     public ResponseEntity<ApiResponse<QuestionResponse>> updateQuestion(
             @PathVariable UUID questionId,
-            @Valid @RequestBody UpdateQuestionRequest request) {
-        Question updatedQuestion = questionUseCase.updateQuestion(questionId, request);
-        return ResponseEntity.ok(ApiResponse.success(mapToQuestionResponse(updatedQuestion)));
+            @Valid @RequestBody UpdateQuestionRequest request
+    ) {
+        Question question = questionService.getQuestionById(questionId);
+        QuestionResponse response = QuestionResponse.builder()
+                .id(question.getId())
+                .text(question.getText())
+                .content(question.getContent())
+                .type(question.getType().name())
+                .category(question.getCategory().name())
+                .sentimentAnalysis(question.isSentimentAnalysis())
+                .answerType(question.getAnswerType())
+                .required(question.isRequired())
+                .active(question.isActive())
+                .projectId(question.getProjectId())
+                .options(question.getOptions().stream()
+                        .map(questionMapper::toOptionResponse)
+                        .collect(Collectors.toList()))
+                .build();
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @DeleteMapping("/{questionId}")
     public ResponseEntity<ApiResponse<Void>> deleteQuestion(@PathVariable UUID questionId) {
-        questionUseCase.deleteQuestion(questionId);
+        questionService.deleteQuestion(questionId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
-    private QuestionResponse mapToQuestionResponse(Question question) {
-        return QuestionResponse.builder()
-                .id(question.getId())
-                .text(question.getText())
-                .type(question.getType())
-                .category(question.getCategory())
-                .sentiment(question.getSentiment())
-                .projectId(question.getProject() != null ? question.getProject().getId() : null)
+    private QuestionSetResponse mapToQuestionSetResponse(List<QuestionResponse> questions) {
+        return QuestionSetResponse.builder()
+                .questionIds(questions.stream()
+                        .map(QuestionResponse::getId)
+                        .collect(Collectors.toList()))
                 .build();
     }
 } 
