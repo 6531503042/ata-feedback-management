@@ -2,7 +2,6 @@ package dev.bengi.feedbackservice.infrastructure.persistence.adapter;
 
 import dev.bengi.feedbackservice.domain.model.Question;
 import dev.bengi.feedbackservice.domain.model.enums.QuestionCategory;
-import dev.bengi.feedbackservice.domain.model.enums.QuestionSentiment;
 import dev.bengi.feedbackservice.domain.model.enums.QuestionType;
 import dev.bengi.feedbackservice.infrastructure.persistence.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,26 +24,6 @@ public class QuestionPersistenceAdapter {
         return questionRepository.findById(id);
     }
 
-    public void deleteById(UUID id) {
-        questionRepository.deleteById(id);
-    }
-
-    public List<Question> findByProjectId(UUID projectId) {
-        return questionRepository.findByProjectId(projectId);
-    }
-
-    public List<Question> findByCategory(QuestionCategory category) {
-        return questionRepository.findByCategory(category);
-    }
-
-    public List<Question> findByType(QuestionType type) {
-        return questionRepository.findByType(type);
-    }
-
-    public List<Question> searchByText(String searchTerm) {
-        return questionRepository.findByTextContainingIgnoreCase(searchTerm);
-    }
-
     public List<Question> findAll() {
         return questionRepository.findAll();
     }
@@ -53,7 +32,27 @@ public class QuestionPersistenceAdapter {
         return questionRepository.findAllById(ids);
     }
 
-    public List<Question> findBySentiment(QuestionSentiment sentiment) {
-        return questionRepository.findBySentiment(sentiment);
+    public void deleteById(UUID id) {
+        questionRepository.deleteById(id);
+    }
+
+    public List<Question> findByType(QuestionType type) {
+        return questionRepository.findByType(type);
+    }
+
+    public List<Question> findByCategory(QuestionCategory category) {
+        return questionRepository.findByCategory(category);
+    }
+
+    public List<Question> findBySentimentAnalysis(boolean sentimentAnalysis) {
+        return questionRepository.findBySentimentAnalysis(sentimentAnalysis);
+    }
+
+    public List<Question> findByProjectId(UUID projectId) {
+        return questionRepository.findByProjectId(projectId);
+    }
+
+    public List<Question> findByTextContainingIgnoreCase(String searchTerm) {
+        return questionRepository.findByTextContainingIgnoreCase(searchTerm);
     }
 } 
