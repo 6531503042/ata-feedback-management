@@ -2,22 +2,17 @@ package dev.bengi.feedbackservice.application.service;
 
 import dev.bengi.feedbackservice.application.port.input.FeedbackUseCase;
 import dev.bengi.feedbackservice.domain.model.Feedback;
-import dev.bengi.feedbackservice.domain.model.FeedbackAnswer;
 import dev.bengi.feedbackservice.domain.model.enums.QuestionCategory;
-import dev.bengi.feedbackservice.domain.model.enums.QuestionSentiment;
 import dev.bengi.feedbackservice.infrastructure.persistence.adapter.FeedbackPersistenceAdapter;
 import dev.bengi.feedbackservice.presentation.dto.request.SubmitFeedbackRequest;
 import dev.bengi.feedbackservice.presentation.dto.response.FeedbackAnalyticsResponse;
 import dev.bengi.feedbackservice.presentation.dto.response.ProjectMetricsResponse;
-import dev.bengi.feedbackservice.application.dto.feedback.FeedbackResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,40 +20,15 @@ public class FeedbackUseCaseImpl implements FeedbackUseCase {
     private final FeedbackPersistenceAdapter feedbackPersistenceAdapter;
 
     @Override
-    public Feedback submitFeedback(UUID userId, SubmitFeedbackRequest request) {
-        LocalDateTime now = LocalDateTime.now();
-        Feedback feedback = Feedback.builder()
-                .id(UUID.randomUUID())
-                .userId(userId)
-                .projectId(request.getProjectId())
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .category(request.getCategory() != null ? 
-                    QuestionCategory.valueOf(request.getCategory()) : null)
-                .privacyLevel(request.getPrivacyLevel())
-                .rating(request.getRating())
-                .responses(mapResponses(request.getResponses()))
-                .submittedAt(now)
-                .createdAt(now)
-                .updatedAt(now)
-                .build();
-                
-        return feedbackPersistenceAdapter.save(feedback);
-    }
-
-    private Map<UUID, FeedbackAnswer> mapResponses(List<FeedbackResponse> responses) {
-        if (responses == null) {
-            return Map.of();
-        }
-        return responses.stream()
-            .collect(Collectors.toMap(
-                FeedbackResponse::getQuestionId,
-                response -> new FeedbackAnswer(
-                    response.getType(),
-                    response.getRatingValue(),
-                    response.getTextValue()
-                )
-            ));
+    public List<Feedback> searchFeedbacks(
+        UUID projectId,
+        QuestionCategory category,
+        boolean sentimentAnalysis,
+        String privacyLevel,
+        String searchTerm
+    ) {
+        return feedbackPersistenceAdapter.searchFeedbacks(
+            projectId, category, sentimentAnalysis, privacyLevel, searchTerm);
     }
 
     @Override
@@ -67,49 +37,43 @@ public class FeedbackUseCaseImpl implements FeedbackUseCase {
     }
 
     @Override
-    public List<Feedback> getFeedbacksWithFilters(
-            UUID projectId,
-            QuestionCategory category,
-            QuestionSentiment sentiment,
-            String privacyLevel,
-            String searchTerm
-    ) {
-        return feedbackPersistenceAdapter.findWithFilters(
-            projectId,
-            category,
-            sentiment,
-            privacyLevel,
-            searchTerm
-        );
+    public List<Feedback> findWithFilters(UUID projectId, QuestionCategory category, boolean sentimentAnalysis, String privacyLevel, String searchTerm) {
+        return searchFeedbacks(projectId, category, sentimentAnalysis, privacyLevel, searchTerm);
+    }
+
+    @Override
+    public List<Feedback> getFeedbacksWithFilters(UUID projectId, QuestionCategory category, boolean sentimentAnalysis, String privacyLevel, String searchTerm) {
+        return searchFeedbacks(projectId, category, sentimentAnalysis, privacyLevel, searchTerm);
+    }
+
+    @Override
+    public Feedback submitFeedback(UUID userId, SubmitFeedbackRequest request) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public FeedbackAnalyticsResponse getProjectAnalytics(UUID projectId) {
-        // TODO: Implement project analytics
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public ProjectMetricsResponse getProjectMetrics(UUID projectId) {
-        // TODO: Implement project metrics
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public FeedbackAnalyticsResponse getYearlyAnalytics(int year) {
-        // TODO: Implement yearly analytics
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public List<Feedback> getRecentFeedback(int limit) {
-        return feedbackPersistenceAdapter.findTopByOrderBySubmittedAtDesc(limit);
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public byte[] generateYearlyReport(int year) {
-        // TODO: Implement yearly report generation
-        return new byte[0];
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
@@ -118,39 +82,22 @@ public class FeedbackUseCaseImpl implements FeedbackUseCase {
     }
 
     @Override
-    public List<Feedback> findWithFilters(
-            UUID projectId,
-            QuestionCategory category,
-            QuestionSentiment sentiment,
-            String privacyLevel,
-            String searchTerm
-    ) {
-        return feedbackPersistenceAdapter.findWithFilters(
-            projectId,
-            category,
-            sentiment,
-            privacyLevel,
-            searchTerm
-        );
-    }
-
-    @Override
-    public Double getAverageRatingByProjectId(UUID projectId) {
-        return feedbackPersistenceAdapter.getAverageRatingByProjectId(projectId);
-    }
-
-    @Override
-    public Double getAverageRatingByProjectIdAndCategory(UUID projectId, QuestionCategory category) {
-        return feedbackPersistenceAdapter.getAverageRatingByProjectIdAndCategory(projectId, category);
+    public List<Feedback> findTopByOrderBySubmittedAtDesc(int limit) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public List<Feedback> findBySubmittedAtBetween(LocalDateTime startDate, LocalDateTime endDate) {
-        return feedbackPersistenceAdapter.findBySubmittedAtBetween(startDate, endDate);
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public List<Feedback> findTopByOrderBySubmittedAtDesc(int limit) {
-        return feedbackPersistenceAdapter.findTopByOrderBySubmittedAtDesc(limit);
+    public Double getAverageRatingByProjectId(UUID projectId) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Double getAverageRatingByProjectIdAndCategory(UUID projectId, QuestionCategory category) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 } 

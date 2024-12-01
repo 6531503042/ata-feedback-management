@@ -3,7 +3,6 @@ package dev.bengi.feedbackservice.application.service;
 import dev.bengi.feedbackservice.application.port.input.QuestionUseCase;
 import dev.bengi.feedbackservice.domain.model.Question;
 import dev.bengi.feedbackservice.domain.model.enums.QuestionCategory;
-import dev.bengi.feedbackservice.domain.model.enums.QuestionSentiment;
 import dev.bengi.feedbackservice.domain.model.enums.QuestionType;
 import dev.bengi.feedbackservice.infrastructure.persistence.adapter.QuestionPersistenceAdapter;
 import dev.bengi.feedbackservice.presentation.dto.request.CreateQuestionRequest;
@@ -22,11 +21,13 @@ public class QuestionUseCaseImpl implements QuestionUseCase {
     @Override
     public Question createQuestion(CreateQuestionRequest request) {
         Question question = Question.builder()
-                .id(UUID.randomUUID())
                 .text(request.getText())
+                .content(request.getContent())
                 .type(QuestionType.valueOf(request.getType()))
                 .category(QuestionCategory.valueOf(request.getCategory()))
-                .sentiment(request.getSentiment())
+                .answerType(request.getAnswerType())
+                .required(request.getRequired())
+                .active(true)
                 .build();
         
         return questionPersistenceAdapter.save(question);
@@ -40,8 +41,7 @@ public class QuestionUseCaseImpl implements QuestionUseCase {
         question.setText(request.getText());
         question.setType(QuestionType.valueOf(request.getType()));
         question.setCategory(QuestionCategory.valueOf(request.getCategory()));
-        question.setSentiment(request.getSentiment());
-
+        
         return questionPersistenceAdapter.save(question);
     }
 
@@ -57,13 +57,8 @@ public class QuestionUseCaseImpl implements QuestionUseCase {
     }
 
     @Override
-    public List<Question> getQuestionsByProject(UUID projectId) {
-        return questionPersistenceAdapter.findByProjectId(projectId);
-    }
-
-    @Override
-    public List<Question> getQuestionsByCategory(QuestionCategory category) {
-        return questionPersistenceAdapter.findByCategory(category);
+    public List<Question> getAllQuestions() {
+        return questionPersistenceAdapter.findAll();
     }
 
     @Override
@@ -72,17 +67,22 @@ public class QuestionUseCaseImpl implements QuestionUseCase {
     }
 
     @Override
+    public List<Question> getQuestionsByCategory(QuestionCategory category) {
+        return questionPersistenceAdapter.findByCategory(category);
+    }
+
+    @Override
+    public List<Question> getQuestionsBySentimentAnalysis(boolean sentimentAnalysis) {
+        return questionPersistenceAdapter.findBySentimentAnalysis(sentimentAnalysis);
+    }
+
+    @Override
+    public List<Question> getQuestionsByProject(UUID projectId) {
+        return questionPersistenceAdapter.findByProjectId(projectId);
+    }
+
+    @Override
     public List<Question> searchQuestions(String searchTerm) {
-        return questionPersistenceAdapter.searchByText(searchTerm);
-    }
-
-    @Override
-    public List<Question> getAllQuestions() {
-        return questionPersistenceAdapter.findAll();
-    }
-
-    @Override
-    public List<Question> getQuestionsBySentiment(QuestionSentiment sentiment) {
-        return questionPersistenceAdapter.findBySentiment(sentiment);
+        return questionPersistenceAdapter.findByTextContainingIgnoreCase(searchTerm);
     }
 } 

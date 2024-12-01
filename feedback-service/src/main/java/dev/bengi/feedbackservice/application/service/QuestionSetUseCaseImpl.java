@@ -28,7 +28,10 @@ public class QuestionSetUseCaseImpl implements QuestionSetUseCase {
         QuestionSet questionSet = QuestionSet.builder()
                 .id(UUID.randomUUID())
                 .name(request.getName())
+                .title(request.getTitle())
                 .description(request.getDescription())
+                .active(true)
+                .projectId(request.getProjectId())
                 .build();
 
         List<Question> questions = questionPersistenceAdapter.findAllById(request.getQuestionIds());
@@ -67,6 +70,7 @@ public class QuestionSetUseCaseImpl implements QuestionSetUseCase {
                 .orElseThrow(() -> new RuntimeException("QuestionSet not found"));
 
         questionSet.setName(request.getName());
+        questionSet.setTitle(request.getTitle());
         questionSet.setDescription(request.getDescription());
         questionSet.getQuestions().clear();
 
@@ -103,7 +107,10 @@ public class QuestionSetUseCaseImpl implements QuestionSetUseCase {
         return QuestionSetResponse.builder()
                 .id(questionSet.getId())
                 .name(questionSet.getName())
+                .title(questionSet.getTitle())
                 .description(questionSet.getDescription())
+                .active(questionSet.isActive())
+                .projectId(questionSet.getProjectId())
                 .questionIds(questionSet.getQuestions().stream()
                         .map(Question::getId)
                         .collect(Collectors.toList()))
