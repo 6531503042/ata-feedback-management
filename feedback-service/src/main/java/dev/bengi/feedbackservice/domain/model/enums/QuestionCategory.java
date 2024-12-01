@@ -2,11 +2,13 @@ package dev.bengi.feedbackservice.domain.model.enums;
 
 public enum QuestionCategory {
     GENERAL,
-    TECHNICAL,
-    PROCESS,
+    SPRINT_REVIEW,
+    PROJECT_FEEDBACK,
+    WORK_ENVIRONMENT,
+    TEAM_COLLABORATION,
+    TECHNICAL_SKILLS,
     COMMUNICATION,
     LEADERSHIP,
-    TEAMWORK,
     PERFORMANCE,
     OTHER
 }

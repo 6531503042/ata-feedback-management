@@ -7,7 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import dev.bengi.feedbackservice.domain.model.enums.PrivacyLevel;
@@ -41,15 +42,9 @@ public class Feedback {
     @Enumerated(EnumType.STRING)
     private PrivacyLevel privacyLevel;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
-    private Question question;
-    
-    @ElementCollection
-    @CollectionTable(name = "feedback_responses", 
-        joinColumns = @JoinColumn(name = "feedback_id"))
-    @MapKeyColumn(name = "question_id")
-    private Map<UUID, Answer> responses;
+    @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Answer> answers = new ArrayList<>();
     
     private Double rating;
     private String additionalComments;
@@ -66,5 +61,15 @@ public class Feedback {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public void addAnswer(Answer answer) {
+        answers.add(answer);
+        answer.setFeedback(this);
+    }
+
+    public void removeAnswer(Answer answer) {
+        answers.remove(answer);
+        answer.setFeedback(null);
     }
 }

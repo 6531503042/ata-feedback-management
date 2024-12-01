@@ -23,27 +23,37 @@ public class Project {
     
     private String name;
     private String description;
-    
-    @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Question> questions = new ArrayList<>();
+    private boolean active;
     
     private LocalDateTime feedbackStartDate;
     private LocalDateTime feedbackEndDate;
+    private Integer totalEmployees;
+    private Integer participatedEmployees;
+    
+    @Builder.Default
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "project_id")
+    private List<Question> questions = new ArrayList<>();
+    
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
-    private Integer totalEmployees;
-    private Integer participatedEmployees;
-    private boolean active;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
     
     public void addQuestion(Question question) {
         questions.add(question);
-        question.setProject(this);
     }
     
     public void removeQuestion(Question question) {
         questions.remove(question);
-        question.setProject(null);
     }
 }
