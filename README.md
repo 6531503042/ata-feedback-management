@@ -2,18 +2,74 @@
 
 ## Project Timeline
 
-### User Service Development (October - January)
-- **Week 4-5 (October)**
-  - [x] USR-01: Login Page Implementation
-  - [x] USR-02: Login Validation
-  - [x] USR-03: Login Response Dialog
-  - [ ] USR-04: Forget Password Dialog
-
+### User Service Development (December - January)
 - **Week 1-2 (December)**
-  - [ ] USR-05: Forget Password Validation
-  - [ ] USR-06: Forget Password Response Dialog
-  - [ ] USR-07: Setup JWT Authentication
-  - [ ] USR-08: Implement RBAC
+  - [ ] USR-01: Core User Service Setup
+    - Initial project structure
+    - Database schema design
+    - Entity models implementation
+    - Repository layer setup
+  - [ ] USR-02: Authentication System
+    - JWT implementation
+    - Security configuration
+    - Token service implementation
+    - Authentication filters
+
+- **Week 3-4 (December)**
+  - [ ] USR-03: User Management APIs
+    - User CRUD operations
+    - Role management
+    - Permission handling
+    - User profile endpoints
+  - [ ] USR-04: Security Implementation
+    - Password encryption
+    - Role-based access control
+    - API security filters
+    - Cross-service authentication
+
+- **Week 1-2 (January)**
+  - [ ] USR-05: Integration Features
+    - Feign client setup
+    - Service discovery integration
+    - Cross-service communication
+    - Error handling
+  - [ ] USR-06: Testing & Documentation
+    - Unit tests
+    - Integration tests
+    - API documentation
+    - Security documentation
+
+### Dependencies
+- USR-02 depends on USR-01 (Core setup required for auth)
+- USR-03 depends on USR-02 (Auth required for user management)
+- USR-04 depends on USR-02, USR-03 (User system needed for RBAC)
+- USR-05 depends on USR-03 (APIs needed for service integration)
+- USR-06 depends on all previous tasks
+
+### Key Features
+- **Authentication & Authorization**
+  - JWT-based authentication
+  - Role-based access control
+  - Token management
+  - Security filters
+
+- **User Management**
+  - User registration
+  - Profile management
+  - Role assignment
+  - Permission control
+
+- **Service Integration**
+  - Feign clients
+  - Service discovery
+  - Cross-service auth
+  - Error handling
+
+- **Testing & Quality**
+  - Unit testing
+  - Integration testing
+  - Security testing
+  - Documentation
 
 ### Feedback Service Development (December - February)
 - **Week 1-2 (December)**
